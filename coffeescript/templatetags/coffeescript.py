@@ -107,4 +107,4 @@ def coffeescript(path):
                 return output_path[len(static_dir):].replace(os.sep, '/').lstrip("/")
         
     
-    return output_path[len(STATIC_ROOT):].replace(os.sep, '/').lstrip("/")
+    return output_path[len(settings.STATIC_ROOT):].replace(os.sep, '/').lstrip("/")
