@@ -1,13 +1,14 @@
 from ..cache import get_cache_key, get_hexdigest, get_hashed_mtime
-from ..settings import COFFEESCRIPT_EXECUTABLE, COFFEESCRIPT_USE_CACHE,\
-    COFFEESCRIPT_CACHE_TIMEOUT, COFFEESCRIPT_OUTPUT_DIR, POSIX_COMPATIBLE
+from ..settings import COFFEESCRIPT_EXECUTABLE, COFFEESCRIPT_USE_CACHE, \
+    COFFEESCRIPT_CACHE_TIMEOUT, COFFEESCRIPT_OUTPUT_DIR, POSIX_COMPATIBLE, \
+    COFFEESCRIPT_LOCATION
 from django.conf import settings
 from django.core.cache import cache
 from django.template.base import Library, Node
 import logging
+import os
 import shlex
 import subprocess
-import os
 
 
 logger = logging.getLogger("coffeescript")
@@ -56,15 +57,10 @@ def do_inlinecoffeescript(parser, token):
 @register.simple_tag
 def coffeescript(path):
 
-    try:
-        STATIC_ROOT = settings.STATIC_ROOT
-    except AttributeError:
-        STATIC_ROOT = settings.MEDIA_ROOT
-
-    full_path = os.path.join(STATIC_ROOT, path)
+    full_path = os.path.join(COFFEESCRIPT_LOCATION, path)
     filename = os.path.split(path)[-1]
 
-    output_directory = os.path.join(STATIC_ROOT, COFFEESCRIPT_OUTPUT_DIR, os.path.dirname(path))
+    output_directory = os.path.join(COFFEESCRIPT_LOCATION, COFFEESCRIPT_OUTPUT_DIR, os.path.dirname(path))
 
     hashed_mtime = get_hashed_mtime(full_path)
 
@@ -100,4 +96,12 @@ def coffeescript(path):
             logger.error(errors)
             return path
 
+    # If DEBUG is on, we want to see if a staticfiles directory is at the beginning
+    # of our output_path.  If it is, we know to use that path instead of STATIC_ROOT.
+    if settings.DEBUG:
+        for static_dir in settings.STATICFILES_DIRS:
+            if output_path.startswith(static_dir):
+                return output_path[len(static_dir):].replace(os.sep, '/').lstrip("/")
+        
+    
     return output_path[len(STATIC_ROOT):].replace(os.sep, '/').lstrip("/")
