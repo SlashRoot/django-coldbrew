@@ -77,8 +77,11 @@ def coffeescript(path):
         source_file.close()
 
         args = shlex.split("%s -c -s -p" % COFFEESCRIPT_EXECUTABLE, posix=POSIX_COMPATIBLE)
-        p = subprocess.Popen(args, stdin=subprocess.PIPE,
+        try:
+            p = subprocess.Popen(args, stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        except OSError:
+            raise RuntimeError('CoffeeScript Executable not found.  Is it installed in your OS?')
         out, errors = p.communicate(source)
         if out:
             if not os.path.exists(output_directory):
