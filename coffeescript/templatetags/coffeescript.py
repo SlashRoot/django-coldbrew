@@ -2,6 +2,7 @@ from ..cache import get_cache_key, get_hexdigest, get_hashed_mtime
 from ..settings import COFFEESCRIPT_EXECUTABLE, COFFEESCRIPT_USE_CACHE, \
     COFFEESCRIPT_CACHE_TIMEOUT, COFFEESCRIPT_OUTPUT_DIR, POSIX_COMPATIBLE, \
     COFFEESCRIPT_LOCATION
+from ..exceptions import ColdBrewCompileError
 from django.conf import settings
 from django.core.cache import cache
 from django.template.base import Library, Node
@@ -97,6 +98,10 @@ def coffeescript(path):
                     os.remove(os.path.join(output_directory, filename))
         elif errors:
             logger.error(errors)
+            
+            if settings.COLDBREW_FAIL_LOUD:
+                raise ColdBrewCompileError('Compiling %s \n\n %s' % (full_path, errors))
+            
             return path
 
     # If DEBUG is on, we want to see if a staticfiles directory is at the beginning

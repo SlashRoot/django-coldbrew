@@ -1,5 +1,7 @@
-Django CoffeeScript
-===================
+ColdBrew
+========
+
+django-coldbrew started as a fork of Django Coffeescript.
 
 Django CoffeeScript provides template tags to compile CoffeeScript into JavaScript from templates.
 It works with both inline code and extenal files.

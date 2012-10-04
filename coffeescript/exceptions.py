@@ -1,0 +1,2 @@
+class ColdBrewCompileError(SyntaxError):
+    pass
