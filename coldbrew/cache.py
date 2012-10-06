@@ -1,4 +1,4 @@
-from coffeescript.settings import COFFEESCRIPT_MTIME_DELAY
+from django.conf import settings
 from django.core.cache import cache
 from django.utils.encoding import smart_str
 from django.utils.hashcompat import md5_constructor
@@ -14,7 +14,7 @@ def get_hexdigest(plaintext, length=None):
 
 
 def get_cache_key(key):
-    return ("django_coffescript.%s.%s" % (socket.gethostname(), key))
+    return ("django_coldbrew.%s.%s" % (socket.gethostname(), key))
 
 
 def get_mtime_cachekey(filename):
@@ -22,12 +22,12 @@ def get_mtime_cachekey(filename):
 
 
 def get_mtime(filename):
-    if COFFEESCRIPT_MTIME_DELAY:
+    if settings.COFFEESCRIPT_MTIME_DELAY:
         key = get_mtime_cachekey(filename)
         mtime = cache.get(key)
         if mtime is None:
             mtime = os.path.getmtime(filename)
-            cache.set(key, mtime, COFFEESCRIPT_MTIME_DELAY)
+            cache.set(key, mtime, settings.COFFEESCRIPT_MTIME_DELAY)
         return mtime
     return os.path.getmtime(filename)
 

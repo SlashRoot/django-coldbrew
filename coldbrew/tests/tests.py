@@ -1,4 +1,4 @@
-from unittest import main, TestCase
+from unittest import TestCase
 from django.template.base import Template
 from django.template.context import RequestContext
 import os
@@ -6,9 +6,7 @@ import re
 import time
 import shutil
 
-
-os.environ["DJANGO_SETTINGS_MODULE"] = "coffeescript.tests.django_settings"
-
+import sys
 
 class CoffeeScriptTestCase(TestCase):
 
@@ -25,7 +23,7 @@ class CoffeeScriptTestCase(TestCase):
 
     def test_inline_coffeescript(self):
         template = Template("""
-        {% load coffeescript %}
+        {% load coldbrew %}
         {% inlinecoffeescript %}
           console.log "Hello, World"
         {% endinlinecoffeescript %}
@@ -38,7 +36,7 @@ class CoffeeScriptTestCase(TestCase):
     def test_external_coffeescript(self):
 
         template = Template("""
-        {% load coffeescript %}
+        {% load coldbrew %}
         {% coffeescript "scripts/test.coffee" %}
         """)
         compiled_filename_re = re.compile(r"COFFEESCRIPT_CACHE/scripts/test-[a-f0-9]{12}.js")
@@ -75,7 +73,3 @@ class CoffeeScriptTestCase(TestCase):
         compiled_file_dir = os.path.dirname(os.path.join(self.django_settings.MEDIA_ROOT,
                                                          compiled_filename_3))
         self.assertEquals(len(os.listdir(compiled_file_dir)), 1)
-
-
-if __name__ == '__main__':
-    main()
