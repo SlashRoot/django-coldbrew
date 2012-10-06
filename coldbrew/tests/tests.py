@@ -24,14 +24,14 @@ class CoffeeScriptTestCase(TestCase):
     def test_inline_coffeescript(self):
         template = Template("""
         {% load coldbrew %}
-        {% inlinecoffeescript %}
-          console.log "Hello, World"
+        {% inlinecoffeescript %}console.log "Hello, World"
         {% endinlinecoffeescript %}
         """)
-        rendered = """(function() {
-  console.log("Hello, World");
+        hopeful_result = u"""(function() {\n
+  console.log("Hello, World");\n
 }).call(this);"""
-        self.assertEqual(template.render(RequestContext({})).strip(), rendered)
+        actual_result = template.render(RequestContext({})).strip()
+        self.assertEqual(actual_result, hopeful_result)
 
     def test_external_coffeescript(self):
 
@@ -45,8 +45,8 @@ class CoffeeScriptTestCase(TestCase):
 
         compiled_path = os.path.join(self.django_settings.MEDIA_ROOT, compiled_filename)
         compiled_content = open(compiled_path).read()
-        compiled = """(function() {
-  console.log("Hello, World!");
+        compiled = """(function() {\n
+  console.log("Hello, World!");\n
 }).call(this);
 """
         self.assertEquals(compiled_content, compiled)
