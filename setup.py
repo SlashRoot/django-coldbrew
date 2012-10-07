@@ -5,19 +5,17 @@ import os
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
-
 README = read('README.rst')
 CHANGES = read('CHANGES.rst')
 
-
 setup(
-    name = "django-coffeescript",
+    name = "django-coldbrew",
     packages = find_packages(),
-    version = "0.4",
-    author = "Andrey Fedoseev",
-    author_email = "andrey.fedoseev@gmail.com",
-    url = "https://github.com/andreyfedoseev/django-coffeescript",
-    description = "Django template tags to compile CoffeeScript",
+    version = "0.5",
+    author = "slashRoot Tech Group",
+    author_email = "info@slashrootcafe.com",
+    url = "https://github.com/SlashRoot/django-coldbrew",
+    description = "Django Template Tags to compile CoffeeScript inline or from a file.",
     long_description = "\n\n".join([README, CHANGES]),
     classifiers = [
         'Development Status :: 4 - Beta',
