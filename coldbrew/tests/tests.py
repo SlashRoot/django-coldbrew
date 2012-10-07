@@ -101,3 +101,6 @@ class CoffeeScriptTestCase(TestCase):
         
         # Since the file already existed, we won't have written again
         self.assertEqual(third_access, second_access)
+        
+        # ...and finally delete the file now that the test is over.
+        os.remove("%s/%s" % (settings.STATIC_ROOT, compiled_filename_yet_again))
