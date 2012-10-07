@@ -1,6 +1,15 @@
 Changes
 *******
 
+0.5
+---
+Added COLDBREW_FAIL_LOUD setting
+Added test coverage
+Tags now work with staticfiles app
+
+
+***CHANGES BELOW ARE PRIOR TO FORK FROM django-coffeescript***
+
 0.4
 ---
 
