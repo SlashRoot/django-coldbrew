@@ -22,7 +22,8 @@ External file
 -------------
 
 ::
-    {% load coffeescript %}
+
+    {% load coldbrew %}
 
     <script type="text/javascript"
             src="{{ STATIC_URL}}{% coffeescript "path/to/script.coffee" %}">
