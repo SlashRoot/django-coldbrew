@@ -1,15 +1,12 @@
 from ..cache import get_cache_key, get_hexdigest, get_hashed_mtime
-from ..exceptions import ColdBrewCompileError
 from .. import compile, get_string_from_path
+from ..exceptions import ColdBrewCompileError
 from django.conf import settings
 from django.core.cache import cache
 from django.template.base import Library, Node
-import logging
+
 import os
 
-
-
-logger = logging.getLogger("coffeescript")
 register = Library()
 
 
@@ -17,7 +14,15 @@ class InlineCoffeescriptNode(Node):
 
     def __init__(self, nodelist):
         self.nodelist = nodelist
-        
+    
+    def compile(self, source):
+        quiet, compile_result = compile(source)
+    
+        if not quiet:
+            raise ColdBrewCompileError("Inline", compile_result)
+        else:
+            return compile_result
+    
     def render(self, context):
         output = self.nodelist.render(context)
 
@@ -26,7 +31,7 @@ class InlineCoffeescriptNode(Node):
             cached = cache.get(cache_key, None)
             if cached is not None:
                 return cached
-            output = compile(output)
+            output = self.compile(output)
             cache.set(cache_key, output, settings.COFFEESCRIPT_CACHE_TIMEOUT)
             return output
         else:
@@ -62,12 +67,17 @@ def coffeescript(source_file_path):
 
 
     coffeescript_string = get_string_from_path(full_path)
-    compiled_javascript = compile(coffeescript_string)
+    
+    
+    quiet, compile_result = compile(coffeescript_string)
+    
+    if not quiet:
+        raise ColdBrewCompileError(full_path, compile_result)
     
     if not os.path.exists(output_directory):
         os.makedirs(output_directory)
     compiled_file = open(output_path, "w+")
-    compiled_file.write(compiled_javascript)
+    compiled_file.write(compile_result)
     compiled_file.close()
 
     # Remove old files

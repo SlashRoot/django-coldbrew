@@ -3,6 +3,7 @@ import os
 import sys
 
 
+
 STATIC_ROOT = MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'media')
 COFFEESCRIPT_LOCATION = STATIC_ROOT
 
@@ -18,14 +19,15 @@ DATABASES={
                 'NAME':'notreal',
             }
         }
-        
+
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
         'console':{
             'level':'DEBUG',
-            'class':'logging.StreamHandler',
+            'class':'coldbrew.tests.MockLoggingHandler',
         },
     },
     'loggers': {
@@ -35,5 +37,13 @@ LOGGING = {
         },
     }
 }
+
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+)
+
+TEMPLATE_DIRS = (
+    STATIC_ROOT
+)
 
 from coldbrew.settings import *

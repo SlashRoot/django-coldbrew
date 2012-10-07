@@ -1,17 +1,21 @@
-from django.test import TestCase
-
-from django.test.utils import override_settings
-
+from django.conf import settings
+from django.template import loader
 from django.template.base import Template
 from django.template.context import RequestContext
-from django.conf import settings
-
+from django.test import TestCase
+from django.test.utils import override_settings
+from coldbrew.exceptions import ColdBrewCompileError
+from io import StringIO
 import os
 import re
-import time
 import shutil
-
 import sys
+import time
+
+import logging
+
+logger = logging.getLogger("coffeescript")
+
 
 class CoffeeScriptTestCase(TestCase):
 
@@ -104,3 +108,37 @@ class CoffeeScriptTestCase(TestCase):
         
         # ...and finally delete the file now that the test is over.
         os.remove("%s/%s" % (settings.STATIC_ROOT, compiled_filename_yet_again))
+    
+    def test_error_quiet(self):
+        # Start by clearing the error message list.
+        logger.handlers[0].messages['error'] = []
+        
+        template = Template("""
+        {% load coldbrew %}
+        {% coffeescript "scripts/test-error.coffee" %}
+        """)
+        template.render(RequestContext({})).strip()
+        
+        # Now we got an error from the rendering.
+        errors = logger.handlers[0].messages['error']
+        self.assertTrue("Unexpected 'INDENT'" in errors[0])
+    
+    @override_settings(COLDBREW_FAIL_LOUD=True)
+    def test_error_loud(self):
+        # Start by clearing the error message list.
+        logger.handlers[0].messages['error'] = []
+        
+        template = loader.get_template('bad_template.html')
+        self.assertRaises(ColdBrewCompileError, template.render, RequestContext({}))
+        
+        # Now we got an error from the rendering.
+        errors = logger.handlers[0].messages['error']
+        self.assertTrue("Unexpected 'INDENT'" in errors[0])
+    
+    @override_settings(COLDBREW_FAIL_LOUD=True)
+    def test_error_loud_inline(self):
+        # Start by clearing the error message list.
+        logger.handlers[0].messages['error'] = []
+        
+        template = loader.get_template('bad_template_inline.html')
+        self.assertRaises(ColdBrewCompileError, template.render, RequestContext({}))

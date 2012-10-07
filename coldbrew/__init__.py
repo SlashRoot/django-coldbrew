@@ -1,8 +1,12 @@
+from coldbrew.exceptions import ColdBrewCompileError
 from coldbrew.cache import get_cache_key, get_hexdigest, get_hashed_mtime
-import subprocess
-import shlex
 from django.conf import settings
+import logging
 import os
+import shlex
+import subprocess
+
+logger = logging.getLogger("coffeescript")
 
 def get_string_from_path(source_file_path):
     source_file = open(source_file_path)
@@ -25,9 +29,9 @@ def compile(coffeescript_string):
         logger.error(errors)
         
         if settings.COLDBREW_FAIL_LOUD:
-            raise ColdBrewCompileError('Compiling %s \n\n %s' % (full_path, errors))
+            return False, errors
         else:
-            return errors
+            return True, errors
 
     if out:
-        return out.decode("utf-8")
+        return True, out.decode("utf-8")
