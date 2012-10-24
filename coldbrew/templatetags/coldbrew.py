@@ -2,6 +2,7 @@ from ..cache import get_cache_key, get_hexdigest, get_hashed_mtime
 from .. import compile, get_string_from_path
 from ..exceptions import ColdBrewCompileError
 from django.conf import settings
+from .. import settings as coldbrew_settings
 from django.core.cache import cache
 from django.template.base import Library, Node
 
@@ -26,13 +27,13 @@ class InlineCoffeescriptNode(Node):
     def render(self, context):
         output = self.nodelist.render(context)
 
-        if settings.COFFEESCRIPT_USE_CACHE:
+        if coldbrew_settings.COFFEESCRIPT_USE_CACHE:
             cache_key = get_cache_key(get_hexdigest(output))
             cached = cache.get(cache_key, None)
             if cached is not None:
                 return cached
             output = self.compile(output)
-            cache.set(cache_key, output, settings.COFFEESCRIPT_CACHE_TIMEOUT)
+            cache.set(cache_key, output, coldbrew_settings.COFFEESCRIPT_CACHE_TIMEOUT)
             return output
         else:
             return self.compile(output)
@@ -54,10 +55,10 @@ def coffeescript(source_file_path):
     else:
         base_filename = filename
 
-    output_directory = os.path.join(settings.COFFEESCRIPT_LOCATION, 
-                                        settings.COFFEESCRIPT_OUTPUT_DIR, 
+    output_directory = os.path.join(coldbrew_settings.COFFEESCRIPT_LOCATION, 
+                                        coldbrew_settings.COFFEESCRIPT_OUTPUT_DIR, 
                                         os.path.dirname(source_file_path))
-    full_path = os.path.join(settings.COFFEESCRIPT_LOCATION, source_file_path)
+    full_path = os.path.join(coldbrew_settings.COFFEESCRIPT_LOCATION, source_file_path)
     hashed_mtime = get_hashed_mtime(full_path)
     output_path = os.path.join(output_directory, "%s-%s.js" % (base_filename, hashed_mtime))
 

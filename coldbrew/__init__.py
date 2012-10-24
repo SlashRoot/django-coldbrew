@@ -1,6 +1,6 @@
 from coldbrew.exceptions import ColdBrewCompileError
 from coldbrew.cache import get_cache_key, get_hexdigest, get_hashed_mtime
-from django.conf import settings
+from . import settings
 import logging
 import os
 import shlex

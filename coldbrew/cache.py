@@ -1,4 +1,4 @@
-from django.conf import settings
+from . import settings
 from django.core.cache import cache
 from django.utils.encoding import smart_str
 from django.utils.hashcompat import md5_constructor
