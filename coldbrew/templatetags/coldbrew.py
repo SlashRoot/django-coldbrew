@@ -64,7 +64,11 @@ def coffeescript(source_file_path):
 
     # If the file already exists, we're not going to even bother reading the input again.
     if os.path.exists(output_path):    
-        return output_path[len(settings.STATIC_ROOT):].replace(os.sep, '/').lstrip("/")
+        url = "%s/%s-%s.js" % (settings.COFFEESCRIPT_OUTPUT_DIR,
+                             base_filename,
+                             hashed_mtime
+                             )
+        return url
 
 
     coffeescript_string = get_string_from_path(full_path)
