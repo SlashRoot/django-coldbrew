@@ -25,7 +25,7 @@ def compile(coffeescript_string):
     out, errors = p.communicate(coffeescript_string.encode("utf-8"))
     
     if not (out or errors):
-        raise ColdBrewCompileError('Process resulted in no output and no errors.  WTF?')
+        raise ColdBrewCompileError(coffeescript_string, 'Process resulted in no output and no errors.  WTF?')
     
     if errors:
         logger.error(errors)
