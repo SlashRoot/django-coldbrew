@@ -55,25 +55,27 @@ def coffeescript(source_file_path):
     else:
         base_filename = filename
 
-    output_directory = os.path.join(coldbrew_settings.COFFEESCRIPT_LOCATION, 
-                                        coldbrew_settings.COFFEESCRIPT_OUTPUT_DIR, 
-                                        os.path.dirname(source_file_path))
     full_path = os.path.join(coldbrew_settings.COFFEESCRIPT_LOCATION, source_file_path)
     hashed_mtime = get_hashed_mtime(full_path)
+    
+    # TODO: Resolve #7 and fix this.
+    output_parent = settings.STATICFILES_DIRS[0]
+    output_directory = os.path.join(output_parent, coldbrew_settings.COFFEESCRIPT_OUTPUT_DIR)
     output_path = os.path.join(output_directory, "%s-%s.js" % (base_filename, hashed_mtime))
 
-    # If the file already exists, we're not going to even bother reading the input again.
-    if os.path.exists(output_path):    
-        url = "%s/%s-%s.js" % (settings.COFFEESCRIPT_OUTPUT_DIR,
+    # Now we know to which path we'll write; let's just make the URL.
+    url = "%s/%s-%s.js" % (settings.COFFEESCRIPT_OUTPUT_DIR,
                              base_filename,
                              hashed_mtime
                              )
+
+    # If the file already exists, we're not going to even bother reading the input again.
+    # Instead, just return the URL.
+    if os.path.exists(output_path):    
         return url
 
 
     coffeescript_string = get_string_from_path(full_path)
-    
-    
     quiet, compile_result = compile(coffeescript_string)
     
     if not quiet:
@@ -85,18 +87,10 @@ def coffeescript(source_file_path):
     compiled_file.write(compile_result)
     compiled_file.close()
 
-    # Remove old files
-    compiled_filename = os.path.split(output_path)[-1]
-    for filename in os.listdir(output_directory):
-        if filename.startswith(base_filename) and filename != compiled_filename:
-            os.remove(os.path.join(output_directory, filename))
-
     # If DEBUG is on, we want to see if a staticfiles directory is at the beginning
     # of our output_path.  If it is, we know to use that path instead of STATIC_ROOT.
     if settings.DEBUG:
         for static_dir in settings.STATICFILES_DIRS:
             if output_path.startswith(static_dir):
                 return output_path[len(static_dir):].replace(os.sep, '/').lstrip("/")
-        
-    relative_output_path = output_path[len(settings.STATIC_ROOT):].replace(os.sep, '/').lstrip("/")
-    return relative_output_path
+    return url
