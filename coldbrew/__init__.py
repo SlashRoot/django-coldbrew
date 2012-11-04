@@ -15,7 +15,6 @@ def get_string_from_path(source_file_path):
     return coffeescript_string
 
 def compile(coffeescript_string):
-        
     args = shlex.split("%s -c -s -p" % settings.COFFEESCRIPT_EXECUTABLE, posix=settings.POSIX_COMPATIBLE)    
     try:
         p = subprocess.Popen(args, stdin=subprocess.PIPE,
@@ -24,6 +23,9 @@ def compile(coffeescript_string):
         raise RuntimeError('CoffeeScript Executable not found.  Is it installed in your OS?')
     
     out, errors = p.communicate(coffeescript_string.encode("utf-8"))
+    
+    if not (out or errors):
+        raise ColdBrewCompileError('Process resulted in no output and no errors.  WTF?')
     
     if errors:
         logger.error(errors)
