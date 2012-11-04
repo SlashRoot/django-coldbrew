@@ -59,7 +59,11 @@ def coffeescript(source_file_path):
     hashed_mtime = get_hashed_mtime(full_path)
     
     # TODO: Resolve #7 and fix this.
-    output_parent = settings.STATICFILES_DIRS[0]
+    if settings.DEBUG:
+        output_parent = settings.STATICFILES_DIRS[0]
+    else:
+        output_parent = settings.STATIC_ROOT
+        
     output_directory = os.path.join(output_parent, coldbrew_settings.COFFEESCRIPT_OUTPUT_DIR)
     output_path = os.path.join(output_directory, "%s-%s.js" % (base_filename, hashed_mtime))
 
@@ -87,10 +91,4 @@ def coffeescript(source_file_path):
     compiled_file.write(compile_result)
     compiled_file.close()
 
-    # If DEBUG is on, we want to see if a staticfiles directory is at the beginning
-    # of our output_path.  If it is, we know to use that path instead of STATIC_ROOT.
-    if settings.DEBUG:
-        for static_dir in settings.STATICFILES_DIRS:
-            if output_path.startswith(static_dir):
-                return output_path[len(static_dir):].replace(os.sep, '/').lstrip("/")
     return url
