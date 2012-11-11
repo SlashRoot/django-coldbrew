@@ -55,6 +55,10 @@ def coffeescript(source_file_path):
     else:
         base_filename = filename
 
+    if not settings.DEBUG:
+        return "%s/%s.js" % (settings.COLDBREW_CUP,
+                             base_filename)
+
     full_path = os.path.join(coldbrew_settings.COFFEESCRIPT_LOCATION, source_file_path)
     hashed_mtime = get_hashed_mtime(full_path)
     
