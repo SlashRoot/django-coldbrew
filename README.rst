@@ -64,7 +64,7 @@ renders to
 
 
 Note that by default compiled files are saved into ``COFFEESCRIPT_CACHE`` folder under your ``STATIC_ROOT`` (or ``MEDIA_ROOT`` if you have no ``STATIC_ROOT`` in your settings).
-You can change this folder name with ``COFFEESCRIPT_OUTPUT_DIR`` setting.
+You can change this folder name with ``COLDBREW_CUP`` setting.
 
 
 Settings
@@ -73,8 +73,9 @@ Settings
 ``COFFEESCRIPT_EXECUTABLE``
     Path to CoffeeScript compiler executable. Default: ``"coffee"``.
 
-``COFFEESCRIPT_OUTPUT_DIR``
-    Output directory for compiled external scripts. It's relative to ``STATIC_ROOT``. Default: ``"COFFEESCRIPT_CACHE"``.
+``COLDBREW_CUP``
+    The "cup" in which to place the brewed coffee, ie, compiled javascript. 
+    This location is relative to ``STATIC_ROOT``. Default: ``"COFFEESCRIPT_CACHE"``.
 
 ``COFFEESCRIPT_USE_CACHE``
     Whether to use cache for inline scripts. Default: ``True``.

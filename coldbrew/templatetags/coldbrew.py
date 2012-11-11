@@ -64,13 +64,12 @@ def coffeescript(source_file_path):
         output_parent = settings.STATIC_ROOT
     else:
         output_parent = settings.STATICFILES_DIRS[0]
-        
-        
-    output_directory = os.path.join(output_parent, coldbrew_settings.COFFEESCRIPT_OUTPUT_DIR)
+
+    output_directory = os.path.join(output_parent, coldbrew_settings.COLDBREW_CUP)
     output_path = os.path.join(output_directory, "%s-%s.js" % (base_filename, hashed_mtime))
 
     # Now we know to which path we'll write; let's just make the URL.
-    url = "%s/%s-%s.js" % (settings.COFFEESCRIPT_OUTPUT_DIR,
+    url = "%s/%s-%s.js" % (settings.COLDBREW_CUP,
                              base_filename,
                              hashed_mtime
                              )

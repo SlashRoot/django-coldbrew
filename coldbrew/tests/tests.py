@@ -21,7 +21,7 @@ class CoffeeScriptTestCase(TestCase):
 
     def setUp(self):
         output_dir = os.path.join(settings.MEDIA_ROOT,
-                                  settings.COFFEESCRIPT_OUTPUT_DIR)
+                                  settings.COLDBREW_CUP)
 
         # Remove the output directory if it exists to start from scratch
         if os.path.exists(output_dir):
@@ -80,7 +80,7 @@ class CoffeeScriptTestCase(TestCase):
                                                          compiled_filename_3))
         self.assertEquals(len(os.listdir(compiled_file_dir)), 1)
         
-    @override_settings(COFFEESCRIPT_OUTPUT_DIR="%s/compiled/" % settings.STATIC_ROOT)
+    @override_settings(COLDBREW_CUP="%s/compiled/" % settings.STATIC_ROOT)
     def test_compiled_file_already_exists_file_is_not_written_again(self):
         template = Template("""
         {% load coldbrew %}
