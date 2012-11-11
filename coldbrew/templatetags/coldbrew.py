@@ -59,10 +59,12 @@ def coffeescript(source_file_path):
     hashed_mtime = get_hashed_mtime(full_path)
     
     # TODO: Resolve #7 and fix this.
-    if settings.DEBUG:
-        output_parent = settings.STATICFILES_DIRS[0]
-    else:
+    # TODO: For the moment, we aren't even going to compile at all if debug=False
+    if not settings.DEBUG:
         output_parent = settings.STATIC_ROOT
+    else:
+        output_parent = settings.STATICFILES_DIRS[0]
+        
         
     output_directory = os.path.join(output_parent, coldbrew_settings.COFFEESCRIPT_OUTPUT_DIR)
     output_path = os.path.join(output_directory, "%s-%s.js" % (base_filename, hashed_mtime))
@@ -72,6 +74,9 @@ def coffeescript(source_file_path):
                              base_filename,
                              hashed_mtime
                              )
+    
+    if not settings.DEBUG:
+        return url
 
     # If the file already exists, we're not going to even bother reading the input again.
     # Instead, just return the URL.
