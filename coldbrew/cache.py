@@ -7,7 +7,7 @@ import hashlib
 
 
 def get_hexdigest(plaintext, length=None):
-    digest = hashlib(smart_str(plaintext)).hexdigest()
+    digest = hashlib.md5(smart_str(plaintext)).hexdigest()
     if length:
         return digest[:length]
     return digest
